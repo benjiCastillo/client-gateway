@@ -9,7 +9,7 @@ import {
   Patch,
 } from '@nestjs/common';
 import { Inject } from '@nestjs/common';
-import { ORDERS_SERVICE } from '../config/services';
+import { NATS_SERVICE } from '../config/services';
 import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { firstValueFrom } from 'rxjs';
@@ -19,15 +19,13 @@ import { StatusDto } from './dto/status.dto';
 
 @Controller('orders')
 export class OrdersController {
-  constructor(
-    @Inject(ORDERS_SERVICE) private readonly ordersClient: ClientProxy,
-  ) {}
+  constructor(@Inject(NATS_SERVICE) private readonly client: ClientProxy) {}
 
   @Post()
   async create(@Body() createOrderDto: CreateOrderDto) {
     try {
       return await firstValueFrom<unknown>(
-        this.ordersClient.send('createOrder', createOrderDto),
+        this.client.send('createOrder', createOrderDto),
       );
     } catch (error) {
       throw new RpcException(error as object);
@@ -38,7 +36,7 @@ export class OrdersController {
   async findAll(@Query() paginationDto: OrderPaginationDto) {
     try {
       return await firstValueFrom<unknown>(
-        this.ordersClient.send('findAllOrders', paginationDto),
+        this.client.send('findAllOrders', paginationDto),
       );
     } catch (error) {
       throw new RpcException(error as object);
@@ -49,7 +47,7 @@ export class OrdersController {
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     try {
       return await firstValueFrom<unknown>(
-        this.ordersClient.send('findOneOrder', id),
+        this.client.send('findOneOrder', id),
       );
     } catch (error) {
       console.log(error);
@@ -64,7 +62,7 @@ export class OrdersController {
   ) {
     try {
       return await firstValueFrom<unknown>(
-        this.ordersClient.send('findAllOrders', {
+        this.client.send('findAllOrders', {
           ...paginationDto,
           status: statusDto.status,
         }),
@@ -82,7 +80,7 @@ export class OrdersController {
   ) {
     try {
       return await firstValueFrom<unknown>(
-        this.ordersClient.send('changeOrderStatus', { id, ...statusDto }),
+        this.client.send('changeOrderStatus', { id, ...statusDto }),
       );
     } catch (error) {
       console.log(error);
