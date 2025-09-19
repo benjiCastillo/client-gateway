@@ -71,7 +71,6 @@ export class ProductsController {
 
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
-    console.log('delete', id);
     try {
       return await firstValueFrom<unknown>(
         this.client.send({ cmd: 'remove_product' }, { id }),

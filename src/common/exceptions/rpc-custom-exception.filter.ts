@@ -1,7 +1,6 @@
 import { Catch, ArgumentsHost, ExceptionFilter } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
 import { Response } from 'express';
-import { Logger } from '@nestjs/common';
 
 interface RpcExceptionInterface {
   status: number;
@@ -25,9 +24,6 @@ export class RpcCustomExceptionFilter implements ExceptionFilter {
       });
     }
 
-    const logger = new Logger('Main-Gateway');
-    logger.log(rpcError);
-    logger.log(name);
     if (
       typeof rpcError === 'object' &&
       'status' in rpcError &&
