@@ -16,11 +16,14 @@ import { PaginationDto } from '../common/dto/pagination.dto';
 import { firstValueFrom } from 'rxjs';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import { UseGuards } from '@nestjs/common';
+import { AuthGuard } from '../auth/guards/auth.guard';
 
 @Controller('products')
 export class ProductsController {
   constructor(@Inject(NATS_SERVICE) private readonly client: ClientProxy) {}
 
+  @UseGuards(AuthGuard)
   @Get()
   async findAll(@Query() query: PaginationDto) {
     try {
@@ -32,6 +35,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Get(':id')
   async findOne(@Param('id', ParseIntPipe) id: number): Promise<any> {
     try {
@@ -44,6 +48,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Post()
   async create(@Body() body: CreateProductDto) {
     try {
@@ -55,6 +60,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,
@@ -69,6 +75,7 @@ export class ProductsController {
     }
   }
 
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async remove(@Param('id', ParseIntPipe) id: number) {
     try {

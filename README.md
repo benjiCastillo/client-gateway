@@ -11,3 +11,8 @@ docker run -d --name nats-main -p 4222:4222 -p 6222:6222 -p 8222:8222 nats
 ```
 4. Tener levantado los microservicios
 5. Levantar el gateway `npm run start:dev`
+
+## Prod
+```bash
+ docker build -f dockerfile.prod -t client-gateway-prod .
+ ```
